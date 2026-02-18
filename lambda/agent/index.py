@@ -3,20 +3,45 @@ import boto3
 import os
 import uuid
 
-bedrock_agent_runtime = boto3.client('bedrock-agent-runtime')
+bedrock_agent_runtime = boto3.client('bedrock-agent-runtime', region_name='us-east-1')
 
 def handler(event, context):
     """
-    Uses Bedrock Knowledge Base to answer auditor questions.
+    Invokes Bedrock Agent to answer auditor questions.
     Returns answer with source citations.
     """
     
-    knowledge_base_id = os.environ['KNOWLEDGE_BASE_ID']
+    agent_id = os.environ.get('AGENT_ID', 'BAUJICP7L10')
+    agent_alias_id = os.environ.get('AGENT_ALIAS_ID', 'WTVHMKDT5R')
+    
+    # Handle OPTIONS request for CORS
+    if event.get('httpMethod') == 'OPTIONS':
+        return {
+            'statusCode': 200,
+            'headers': {
+                'Access-Control-Allow-Origin': '*',
+                'Access-Control-Allow-Headers': 'Content-Type',
+                'Access-Control-Allow-Methods': 'POST,OPTIONS'
+            },
+            'body': ''
+        }
     
     # Extract question from request
-    body = json.loads(event.get('body', '{}'))
-    question = body.get('question', '')
-    session_id = body.get('session_id', str(uuid.uuid4()))
+    try:
+        body = json.loads(event.get('body', '{}'))
+        question = body.get('question', '')
+        session_id = body.get('session_id', str(uuid.uuid4()))
+    except:
+        return {
+            'statusCode': 400,
+            'headers': {
+                'Content-Type': 'application/json',
+                'Access-Control-Allow-Origin': '*',
+                'Access-Control-Allow-Headers': 'Content-Type',
+                'Access-Control-Allow-Methods': 'POST,OPTIONS'
+            },
+            'body': json.dumps({'error': 'Invalid request body'})
+        }
     
     if not question:
         return {
@@ -31,39 +56,41 @@ def handler(event, context):
         }
     
     try:
-        print(f"Using Knowledge Base: {knowledge_base_id}")
+        print(f"Invoking agent {agent_id} with alias {agent_alias_id}")
         print(f"Question: {question}")
+        print(f"Session: {session_id}")
         
-        # Use retrieve and generate API with default model
-        response = bedrock_agent_runtime.retrieve_and_generate(
-            input={
-                'text': question
-            },
-            retrieveAndGenerateConfiguration={
-                'type': 'KNOWLEDGE_BASE',
-                'knowledgeBaseConfiguration': {
-                    'knowledgeBaseId': knowledge_base_id,
-                    'modelArn': 'arn:aws:bedrock:us-east-1::foundation-model/anthropic.claude-instant-v1'
-                }
-            }
+        # Try using just the first 10 characters of agent ID
+        short_agent_id = agent_id[:10] if len(agent_id) > 10 else agent_id
+        print(f"Using shortened agent ID: {short_agent_id}")
+        
+        # Invoke agent using invoke_agent API
+        response = bedrock_agent_runtime.invoke_agent(
+            agentId=short_agent_id,
+            agentAliasId=agent_alias_id,
+            sessionId=session_id,
+            inputText=question,
+            enableTrace=False
         )
         
-        print(f"Got response from Knowledge Base")
+        print("Got response from agent, processing stream...")
         
-        # Extract answer and citations
-        answer = response.get('output', {}).get('text', 'No answer generated')
+        # Parse streaming response
+        answer = ""
+        event_stream = response.get('completion', [])
         
-        citations = []
-        for citation in response.get('citations', []):
-            for ref in citation.get('retrievedReferences', []):
-                citations.append({
-                    'text': ref.get('content', {}).get('text', ''),
-                    'source': ref.get('location', {}).get('s3Location', {}).get('uri', 'Unknown'),
-                    'score': ref.get('metadata', {}).get('score', 0)
-                })
+        for event in event_stream:
+            if 'chunk' in event:
+                chunk = event['chunk']
+                if 'bytes' in chunk:
+                    chunk_text = chunk['bytes'].decode('utf-8')
+                    answer += chunk_text
+                    print(f"Chunk: {chunk_text}")
         
-        print(f"Final answer: {answer}")
-        print(f"Citations count: {len(citations)}")
+        print(f"Final answer length: {len(answer)}")
+        
+        if not answer:
+            answer = "I received your question but couldn't generate a response. Please try rephrasing your question."
         
         return {
             'statusCode': 200,
@@ -75,15 +102,17 @@ def handler(event, context):
             },
             'body': json.dumps({
                 'answer': answer,
-                'citations': citations,
+                'citations': [],
                 'session_id': session_id
             })
         }
         
     except Exception as e:
-        print(f"Error invoking agent: {str(e)}")
+        error_msg = str(e)
+        print(f"Error invoking agent: {error_msg}")
         import traceback
         traceback.print_exc()
+        
         return {
             'statusCode': 500,
             'headers': {
@@ -92,5 +121,8 @@ def handler(event, context):
                 'Access-Control-Allow-Headers': 'Content-Type',
                 'Access-Control-Allow-Methods': 'POST,OPTIONS'
             },
-            'body': json.dumps({'error': str(e)})
+            'body': json.dumps({
+                'error': f'Agent invocation failed: {error_msg}',
+                'details': 'Check CloudWatch logs for more information'
+            })
         }
