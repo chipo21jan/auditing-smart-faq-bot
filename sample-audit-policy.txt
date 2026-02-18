@@ -1,0 +1,60 @@
+# Procurement Policy
+
+## Competitive Bidding Thresholds
+
+All procurement activities must follow these thresholds:
+
+- Purchases under $5,000: Single quote acceptable
+- Purchases $5,000 - $25,000: Minimum of three quotes required
+- Purchases over $25,000: Formal competitive bidding process required
+
+## Travel Expense Policy
+
+Travel expenses must be supported by the following documentation:
+
+- Flight tickets: Original boarding passes and e-ticket receipts
+- Hotel accommodation: Itemized hotel bills showing room rate and dates
+- Per diem: Travel authorization form approved before travel
+- Local transportation: Receipts for amounts over $25
+
+Maximum allowable rates:
+- Domestic flights: Economy class only
+- International flights: Business class allowed for flights over 6 hours
+- Hotel accommodation: Up to $150 per night for domestic travel
+- Meals per diem: $50 per day
+
+## Gift Policy
+
+Employees may accept gifts under the following conditions:
+
+- Gifts valued under $50: Acceptable if occasional and not influencing business decisions
+- Gifts valued $50-$100: Must be reported to supervisor
+- Gifts over $100: Must be declined or donated to charity
+- Cash gifts: Never acceptable under any circumstances
+
+## Segregation of Duties - Cash Handling
+
+To maintain proper internal controls:
+
+- Cash receipts must be recorded by one person and deposited by another
+- Bank reconciliations must be performed by someone independent of cash handling
+- Approval authority must be separate from payment processing
+- Physical access to cash must be limited to authorized personnel only
+
+## Audit Documentation Requirements
+
+All audit work must be documented with:
+
+- Working papers showing audit procedures performed
+- Evidence of supervisory review on all workpapers
+- Clear cross-references between workpapers and audit findings
+- Retention of audit files for minimum 7 years
+
+## Donor Compliance - USAID
+
+For USAID-funded projects:
+
+- All costs must be allocable, allowable, and reasonable
+- Unallowable costs include: alcoholic beverages, entertainment, lobbying
+- Time and effort reporting required for all personnel charged to grants
+- Prior approval required for budget reallocations over 10%

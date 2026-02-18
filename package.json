@@ -1,0 +1,11 @@
+{
+  "name": "auditing-smart-faq-bot",
+  "version": "1.0.0",
+  "description": "RAG-powered FAQ bot for auditors",
+  "private": true,
+  "workspaces": [
+    "infrastructure",
+    "lambda",
+    "web"
+  ]
+}
