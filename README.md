@@ -73,10 +73,46 @@ Then sync the Knowledge Base in the console.
 
 ## 🧪 Testing
 
-Test in Bedrock Console:
-- Go to Agents → Your Agent
-- Click "Test"
-- Ask: "What is the procurement threshold for competitive bidding?"
+### Method 1: Bedrock Console (Recommended for Demo)
+
+1. Sign in to AWS Console
+2. Navigate to Amazon Bedrock service
+3. Go to **Agents** in the left sidebar
+4. Click on your agent (e.g., "auditing-agent")
+5. Click the **"Test"** button in the top right
+6. Type your question in the chat interface
+7. View the answer with source citations
+
+**Example Questions:**
+- "What is the procurement threshold for competitive bidding?"
+- "What evidence is required for travel expense verification?"
+- "Show me segregation of duties requirements for cash handling"
+
+### Method 2: Direct Knowledge Base Testing
+
+1. Go to Amazon Bedrock Console
+2. Navigate to **Knowledge Bases**
+3. Select your Knowledge Base (e.g., "auditing-kb")
+4. Click **"Test"** tab
+5. Enter your query and see retrieved documents
+
+### Method 3: API Gateway (For Production)
+
+Once the Lambda function is fully configured:
+
+```bash
+curl -X POST https://YOUR-API-GATEWAY-URL/prod/chat \
+  -H "Content-Type: application/json" \
+  -d '{"question":"What is the procurement threshold for competitive bidding?"}'
+```
+
+### Access Requirements
+
+To test the agent, you need:
+- AWS Account with Bedrock access
+- IAM permissions for Bedrock Agent and Knowledge Base
+- Agent must be in "PREPARED" state
+- Knowledge Base must be synced with documents
 
 ## 📊 Expected Benefits
 
