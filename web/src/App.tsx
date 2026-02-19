@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import './App.css';
+import { askAgent } from './api/bedrock';
 
 interface Message {
   role: 'user' | 'assistant';
@@ -18,27 +19,37 @@ function App() {
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
   const [sessionId] = useState(() => `session-${Date.now()}`);
+  const [useLocal, setUseLocal] = useState(true); // Toggle for local vs API
 
   const sendMessage = async () => {
     if (!input.trim()) return;
 
     const userMessage: Message = { role: 'user', content: input };
     setMessages(prev => [...prev, userMessage]);
+    const currentInput = input;
     setInput('');
     setLoading(true);
 
     try {
-      // API Gateway endpoint
-      const response = await fetch('https://p7z41veq9l.execute-api.us-east-1.amazonaws.com/prod/chat', {
+      // Call local Python server
+      const apiUrl = useLocal 
+        ? 'http://localhost:5000/chat'  // Local Python server
+        : 'https://p7z41veq9l.execute-api.us-east-1.amazonaws.com/prod/chat';  // API Gateway
+      
+      const response = await fetch(apiUrl, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          question: input,
+          question: currentInput,
           session_id: sessionId
         })
       });
 
       const data = await response.json();
+      
+      if (data.error) {
+        throw new Error(data.error);
+      }
       
       const assistantMessage: Message = {
         role: 'assistant',
@@ -51,7 +62,7 @@ function App() {
       console.error('Error:', error);
       setMessages(prev => [...prev, {
         role: 'assistant',
-        content: 'Sorry, an error occurred. Please try again.'
+        content: `Error: ${error instanceof Error ? error.message : 'An error occurred'}. ${useLocal ? 'Make sure the local server is running (python local-server.py)' : 'Check API Gateway connection'}`
       }]);
     } finally {
       setLoading(false);
@@ -63,6 +74,16 @@ function App() {
       <header className="header">
         <h1>Auditing Smart FAQ Bot</h1>
         <p>Ask questions about policies, SOPs, donor rules, and audit reports</p>
+        <div style={{ fontSize: '12px', marginTop: '10px' }}>
+          <label>
+            <input 
+              type="checkbox" 
+              checked={useLocal} 
+              onChange={(e) => setUseLocal(e.target.checked)}
+            />
+            {' '}Use Local Server (localhost:5000)
+          </label>
+        </div>
       </header>
 
       <div className="chat-container">
