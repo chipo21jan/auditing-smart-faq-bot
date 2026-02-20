@@ -2,6 +2,11 @@
 
 An AI-powered conversational assistant that helps auditors quickly find information from policies, SOPs, donor rules, and audit reports using Amazon Bedrock Knowledge Bases and Agents.
 
+**Team #41** | AWS ANZ Hackathon 2026  
+**Team Members:** Chipo Shereni & Sunny Hwang
+
+🌐 **Live Demo:** http://54.90.193.128:8501/
+
 ## 🎯 Business Problem
 
 Auditors spend significant time searching through scattered documents (PDFs, SharePoint, emails), leading to:
@@ -16,12 +21,16 @@ A conversational AI bot that provides instant, accurate answers with source cita
 
 ## 🏗️ Architecture
 
+### Backend Infrastructure
 - **Amazon S3**: Document storage
 - **AWS Lambda**: Document processing and agent invocation
-- **Amazon Bedrock Knowledge Base**: Document indexing and retrieval
-- **Amazon Bedrock Agent**: Natural language Q&A
+- **Amazon Bedrock Knowledge Base**: Document indexing and retrieval (OpenSearch Serverless)
+- **Amazon Bedrock Agent**: Natural language Q&A with Claude 3.5 Sonnet
 - **API Gateway**: REST API for web access
-- **React Web UI**: User interface
+
+### Frontend Options
+- **Streamlit UI** (Production): Deployed on AWS Lightsail - http://54.90.193.128:8501/
+- **React Web UI** (Alternative): Available in `/web` folder
 
 ## ✨ Features
 
@@ -73,7 +82,21 @@ Then sync the Knowledge Base in the console.
 
 ## 🧪 Testing
 
-### Method 1: Bedrock Console (Recommended for Demo)
+### Method 1: Live Web UI (Best for Demo!)
+
+Visit the live Streamlit interface: **http://54.90.193.128:8501/**
+
+1. Open the URL in your browser
+2. Type your question in the chat input
+3. Get instant answers with source citations
+4. See the conversation history
+
+**Example Questions:**
+- "What is the procurement threshold for competitive bidding?"
+- "What evidence is required for travel expense verification?"
+- "Show me segregation of duties requirements for cash handling"
+
+### Method 2: Bedrock Console (For Testing)
 
 1. Sign in to AWS Console
 2. Navigate to Amazon Bedrock service
@@ -137,20 +160,23 @@ To test the agent, you need:
 
 ## 🛠️ Technology Stack
 
-- **Cloud**: AWS (S3, Lambda, Bedrock, API Gateway)
-- **AI/ML**: Amazon Bedrock (Claude, Titan Embeddings)
+- **Cloud**: AWS (S3, Lambda, Bedrock, API Gateway, Lightsail)
+- **AI/ML**: Amazon Bedrock (Claude 3.5 Sonnet, Titan Embeddings G1)
+- **Vector Store**: OpenSearch Serverless
 - **Infrastructure**: AWS CDK (TypeScript)
 - **Backend**: Python 3.11
-- **Frontend**: React, TypeScript
+- **Frontend**: Streamlit (Production), React (Alternative)
+
+## 👥 Team
+
+**Team #41** - AWS ANZ Hackathon 2026
+- **Chipo Shereni** - Infrastructure, Bedrock Agent, Knowledge Base, CDK
+- **Sunny Hwang** - Streamlit UI, Lightsail Deployment
 
 ## 📄 License
 
 This project is for hackathon demonstration purposes.
 
-## 👤 Author
-
-chipo21jan
-
 ---
 
-Built for AWS Hackathon 2026
+Built with ❤️ for AWS ANZ Hackathon 2026
