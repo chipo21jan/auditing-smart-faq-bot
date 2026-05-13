@@ -1,11 +1,12 @@
 # Auditing Smart FAQ Bot
 
-An AI-powered conversational assistant that helps auditors quickly find information from policies, SOPs, donor rules, and audit reports using Amazon Bedrock Knowledge Bases and Agents.
+> **🎥 Live demo & walkthrough video:** https://huggingface.co/spaces/chipo21jan/auditing-smart-faq-bot
 
-**Team #41** | AWS ANZ Hackathon 2026  
-**Team Members:** Chipo Shereni & Sunny Hwang
+A RAG-based audit FAQ assistant built on Amazon Bedrock + Claude 3.5 Sonnet, with traceable citations to source documents.
 
-🌐 **Live Demo:** http://54.90.193.128:8501/
+**Honorary Mention** — AWS Women in AI/ML Hackathon 2026 · Team 41 (Sunny Hwang & Chipo Shereni)
+---
+
 
 ## 🎯 Business Problem
 
